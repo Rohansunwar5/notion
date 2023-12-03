@@ -118,7 +118,6 @@ export const subscriptions = pgTable('subscriptions', {
     mode: 'string',
   }).default(sql`now()`),
   canceledAt: timestamp('canceled_at', {
-    withTimezone: true,
     mode: 'string',
   }).default(sql`now()`),
   trialStart: timestamp('trial_start', {

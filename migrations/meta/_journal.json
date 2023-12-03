@@ -15,6 +15,13 @@
       "when": 1701604421460,
       "tag": "0001_wooden_tempest",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1701606378500,
+      "tag": "0002_solid_morlun",
+      "breakpoints": true
     }
   ]
 }
