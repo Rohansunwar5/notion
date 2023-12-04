@@ -1,10 +1,18 @@
 import TitleSection from '@/components/landing-page/title-section';
-import React from 'react'
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import Banner from '../../../public/appBanner.png'
-import Cal from '../../../public/cal.png'
-import { CLIENTS } from '@/lib/constants';
+import React from 'react';
+import Banner from '../../../public/appBanner.png';
+import Cal from '../../../public/cal.png';
+import Diamond from '../../../public/icons/diamond.svg';
+import CheckIcon from '../../../public/icons/check.svg';
+import { CLIENTS, USERS } from '@/lib/constants';
+import { randomUUID } from 'crypto';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
+import CustomCard from '@/components/landing-page/custom-card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 
 const HomePage = () => {
   return (
@@ -12,7 +20,7 @@ const HomePage = () => {
       <section 
         className='overflow-hidden px-4 sm:px-6 mt-10 sm:flex sm:flex-col gap-4 md:justify-center md:items-center'
       >
-        <TitleSection pill='✨ Your Workspace, Perfected' title='All in one collaboration Platform'/>
+        <TitleSection pill='✨ Your Workspace, Perfected' title='Unified Collaboration Solution'/>
         <div className='bg-white p-[2px] mt-6 rounded-xl bg-gradient-to-r from-primary to-brand-primaryBlue sm:w-[300px]'
         >
           <Button
@@ -24,7 +32,7 @@ const HomePage = () => {
             bg-background
           "
           >
-            Get Cypress Free
+            Get SynthifyHub Free
           </Button>
         </div>
         <div className='md:mt-[-90px] sm:w-full w-[750px] flex justify-center items-center mt-[-40px] relative sm:ml-0 ml-[-50px]
@@ -127,8 +135,80 @@ const HomePage = () => {
             />
           </div>
       </section>
+      <section className='relative'>
+      <div
+          className='w-full
+          blur-[120px]
+          rounded-full
+          h-32
+          absolute
+          bg-brand-primaryPurple/50
+          -z-10
+          top-56
+          '
+        />
+        <div className='mt-20 px-4 sm:-6 flex flex-col overflow-x-hidden overflow-visible'>
+        <TitleSection
+            title="Trusted by all"
+            subheading="Join thousands of satisfied users who rely on our platform for their 
+            personal and professional productivity needs."
+            pill="Testimonials"
+        />
+        {[...Array(2)].map((arr, index) => (
+          <div key={randomUUID()} 
+          className={twMerge(
+            clsx('mt-10 flex flex-nowrap gap-6 self-start', {
+            'flex-row-reverse':index ===1,
+            'animate-[slide_250s_linear_infinite]':true,
+            'animate-[slide_250s_linear_infinite_reverse]':index ===1,
+            'ml-[100vw]': index === 1,
+            }),
+            'hover:paused'
+          )}
+          >
+            {USERS.map((testimonial, index) => (
+             <CustomCard
+             key={testimonial.name}
+             className="w-[500px]
+             shrink-0s
+             rounded-xl
+             dark:bg-gradient-to-t
+             dark:from-border dark:to-background
+           "
+             cardHeader={
+               <div
+                 className="flex
+                 items-center
+                 gap-4
+             "
+               >
+                 <Avatar>
+                   <AvatarImage src={`/avatars/${index + 1}.png`} />
+                   <AvatarFallback>AV</AvatarFallback>
+                 </Avatar>
+                 <div>
+                   <CardTitle className="text-foreground">
+                     {testimonial.name}
+                   </CardTitle>
+                   <CardDescription className="dark:text-washed-purple-800">
+                     {testimonial.name.toLocaleLowerCase()}
+                   </CardDescription>
+                 </div>
+               </div>
+             }
+             cardContent={
+               <p className="dark:text-washed-purple-800">
+                 {testimonial.message}
+               </p>
+             }
+           ></CustomCard>
+            ))}
+          </div>
+        ))}
+        </div>
+      </section>
     </>
-  )
-}
+  );
+};
 
 export default HomePage;
