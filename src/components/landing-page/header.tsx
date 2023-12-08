@@ -101,11 +101,135 @@ const Header = () => {
           >
             Resources
           </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className='grid gap-3 p-6 md:w-[400px] ld:w-[500px] lg:grid-cols-[.75fr_1fr]'>
+              <li className='row-span-3'>
+                <span className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-sm'>
+                  Welcome
+                </span>
+
+              </li>
+              <ListItem
+                href='#'
+                title='Introduction'
+              >
+                Re-useable Components
+              </ListItem>
+              <ListItem
+                href='#'
+                title='Installation'
+              >
+                INstallation of dependencies 
+              </ListItem>
+              <ListItem
+                href='#'
+                title='Typography'
+              >
+                Styles for heading, paragraphs, lists ...etc
+              </ListItem>
+            </ul>
+          </NavigationMenuContent>
         </NavigationMenuItem>
-      </NavigationMenuList>
+        <NavigationMenuItem>
+        <NavigationMenuTrigger onClick={() => setPath('#pricing')}
+           className={cn({
+            'dark:text-white':path === '#pricing',
+            'dark:text-white/40':path !== '#pricing',
+            'font-normal':true,
+            'text-xl':true,
+          })}
+        >
+          Pricing 
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <ul
+            className='grid w-[400px] gap-3 p-4 md:grid-fow-2'
+          >
+            <ListItem 
+            title='Pro Plan'
+            href={'#'}
+            >
+            Great for teams just starting out.
+            </ListItem>
+            <ListItem 
+            title='Pro Plan'
+            href={'#'}
+            >
+            Collaborate with your teams anywhere.
+            </ListItem>
+          </ul>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuContent>
+          <ul
+            className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]'
+          >
+            {components.map((component) => (
+            <ListItem 
+            key={component.title} 
+            title={component.title}
+            href={component.href}
+            >
+              {component.description}
+            </ListItem>))}
+          </ul>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        
+          <NavigationMenuLink
+            className={cn(navigationMenuTriggerStyle(), {
+              'dark:text-white': path === '#testimonials',
+              'dark:text-white/40': path !== '#testimonials',
+              'font-normal':true,
+              'text-xl':true,
+            })}
+          >
+            Testimonials
+          </NavigationMenuLink>
+        
+      </NavigationMenuItem>
+    </NavigationMenuList>
     </NavigationMenu>
+    <aside 
+      className='flex w-full gap-2 justify-end'
+    >
+      <Link href={'/login'}>
+        <Button variant='btn-secondary' className='p-1 hidden sm:block'>
+          Login
+        </Button>
+      </Link>
+      <Link href='/signup'>
+        <Button variant='btn-primary' className='whitespace-nowrap'>Sign Up</Button>
+      </Link>
+    </aside>
    </header>
   )
 }
 
-export default Header
+export default Header;
+
+const ListItem = React.forwardRef<React.ElementRef<'a'>,
+React.ComponentPropsWithoutRef<'a'>> (({className, title, children, ...props}, ref) => {
+  return( 
+  <li>
+  <NavigationMenuLink asChild>
+      <a ref={ref} className={cn('group block select-none space-y-1 font-medium leading-none')}
+      {...props}
+      >
+        <div className='text-white text-sm font-medium leading-none'>
+          {title}
+        </div>
+        <p
+          className='group-hover:text-white/70 line-clamp-2 text-sm leading-snug text-white/40'
+        >
+          {children}
+        </p>
+      </a>
+  </NavigationMenuLink> 
+  </li>
+  )
+});
+
+ListItem.displayName = 'ListItem';
