@@ -22,6 +22,7 @@ import Loader from '@/components/Loader';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { MailCheck } from 'lucide-react';
 import { FormSchema } from '@/lib/types';
+import { actionSignUpUser } from '@/lib/server-action/auth-actions';
 
 const SignUpFormSchema = z.object({
   email: z.string().describe('Email').email({message: 'Invalid Email'}),
@@ -61,10 +62,15 @@ const form = useForm<z.infer<typeof SignUpFormSchema >>({
 
 const isLoading = form.formState.isSubmitting;
 const onSubmit =async({email, password}: z.infer<typeof FormSchema>) => {
-  
+  const {error} = await actionSignUpUser({email, password});
+  if(error){
+    setSubmitError(error.message)
+    form.reset();
+    return;
+  }
+  setConfirmation(true);
 };
 
-const SignupHandler = () => {};
   return (
     <Form {...form}>
       <form onChange={()=> {if(submitError) setSubmitError(''); 
@@ -97,7 +103,7 @@ const SignupHandler = () => {};
         disabled={isLoading}
         control={form.control}
         name="email"
-        render={(field)=> (
+        render={({field})=> (
           <FormItem>
           <FormControl>
             <Input type='email' placeholder='Email' {...field}/>
@@ -110,7 +116,7 @@ const SignupHandler = () => {};
         disabled={isLoading}
         control={form.control}
         name="password"
-        render={(field)=> (
+        render={({field})=> (
           <FormItem>
           <FormControl>
             <Input type='password' placeholder='Password' {...field}/>
@@ -123,7 +129,7 @@ const SignupHandler = () => {};
         disabled={isLoading}
         control={form.control}
         name="confirmPassword"
-        render={(field)=> (
+        render={({field})=> (
           <FormItem>
           <FormControl>
             <Input type='password' placeholder='Confirm Password' {...field}/>
