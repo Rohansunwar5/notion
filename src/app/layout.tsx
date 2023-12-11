@@ -3,9 +3,11 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import db from '@/lib/supabase/db'
 import { ThemeProvider } from '@/lib/providers/next-theme-provider'
-
+import { SupabaseUserProvider } from '@/lib/providers/supabase-user-provider';
 import {DM_Sans} from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster'
 import { twMerge } from 'tailwind-merge'
+import AppStateProvider from '@/lib/providers/state-provider'
 
 
 const inter = DM_Sans({ subsets: ['latin'] })
@@ -28,9 +30,14 @@ export default function RootLayout({
           attribute='class'
           defaultTheme='dark'
           enableSystem
-          
         >
-        {children}
+          <AppStateProvider>
+            <SupabaseUserProvider>
+              
+              {children}
+              <Toaster/>
+            </SupabaseUserProvider>
+          </AppStateProvider>
         </ThemeProvider>
         
         </body>
