@@ -417,7 +417,7 @@ export interface Database {
   };
 }
 
-export type workspace = InferSelectModel<typeof workspace>;
+export type Workspace = InferSelectModel<typeof workspace>;
 export type User = InferSelectModel<typeof users>;
 export type Folder = InferSelectModel<typeof folders>;
 export type File = InferSelectModel<typeof files>;
