@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { getCollaboratingWorkspaces, getFolders, getPrivateWorkspaces, getSharedWorkspaces, getUserSubscriptionStatus } from '@/lib/supabase/queries';
 import { redirect } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
+// import { workspace } from '@/lib/supabase/supabase.types';
+import WorkspaceDropdown from './workspace-dropdown';
 
 interface SidebarProps {
   params: { workspaceId: string};
@@ -25,7 +27,7 @@ const Sidebar:React.FC<SidebarProps> = async ({params, className}) => {
   //error
   if(subscriptionError || foldersError) redirect('/dashboard');
 
-  const [privateWorkspaces, collaborationgWorkspaces, sharedWorkspaces]= await Promise.all([
+  const [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces]= await Promise.all([
   getPrivateWorkspaces(user.id),
   getCollaboratingWorkspaces(user.id),
   getSharedWorkspaces(user.id),
@@ -36,7 +38,16 @@ const Sidebar:React.FC<SidebarProps> = async ({params, className}) => {
     )}
   >
     <div>
-      
+      <WorkspaceDropdown
+        privateWorkspaces={privateWorkspaces}
+        sharedWorkspaces={sharedWorkspaces}
+        collaboratingWorkspaces={collaboratingWorkspaces}
+        defaultValue={[
+          ...privateWorkspaces,
+          ...collaboratingWorkspaces,
+          ...sharedWorkspaces,
+        ].find((workspace) => workspace.id === params.workspaceId)}
+      ></WorkspaceDropdown>
     </div>
   </aside>
 }
