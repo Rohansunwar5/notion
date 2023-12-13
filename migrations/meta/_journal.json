@@ -22,6 +22,13 @@
       "when": 1701606378500,
       "tag": "0002_solid_morlun",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1702396787706,
+      "tag": "0003_cute_slayback",
+      "breakpoints": true
     }
   ]
 }

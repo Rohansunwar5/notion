@@ -1,9 +1,9 @@
 // import { timestamp } from 'drizzle-orm/mysql-core';
 import { boolean, integer, jsonb, pgTable, uuid ,timestamp , text} from 'drizzle-orm/pg-core';
-import { prices, subscriptionStatus } from '../../../migrations/schema';
-import {sql} from 'drizzle-orm'
+import { prices, subscriptionStatus, users } from '../../../migrations/schema';
+import {sql} from 'drizzle-orm';
 
-export const workspaces = pgTable('workspace', {
+export const workspaces = pgTable('workspaces', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', {
     withTimezone: true,
@@ -103,3 +103,21 @@ export const subscriptions = pgTable('subscriptions', {
     mode: 'string',
   }).default(sql`now()`),
 });
+
+export const collaborators = pgTable('collaborators', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  workspaceId: uuid('workspace_id')
+    .notNull()
+    .references(() => workspaces.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', {
+    withTimezone: true,
+    mode: 'string',
+  })
+    .defaultNow()
+    .notNull(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+});
+
+

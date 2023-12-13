@@ -12,7 +12,7 @@ export const pricingPlanInterval = pgEnum("pricing_plan_interval", ['day', 'week
 export const subscriptionStatus = pgEnum("subscription_status", ['trialing', 'active', 'canceled', 'incomplete', 'incomplete_expired', 'past_due', 'unpaid'])
 
 
-export const workspace = pgTable("workspace", {
+export const workspaces = pgTable("workspaces", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
 	workspaceOwner: uuid("workspace_owner").notNull(),
@@ -32,7 +32,7 @@ export const folders = pgTable("folders", {
 	data: text("data"),
 	inTrash: text("in_trash"),
 	bannerUrl: text("banner_url"),
-	workspaceId: uuid("workspace_id").references(() => workspace.id, { onDelete: "cascade" } ),
+	workspaceId: uuid("workspace_id").references(() => workspaces.id, { onDelete: "cascade" } ),
 });
 
 export const files = pgTable("files", {
@@ -43,7 +43,7 @@ export const files = pgTable("files", {
 	data: text("data"),
 	inTrash: text("in_trash"),
 	bannerUrl: text("banner_url"),
-	workspaceId: uuid("workspace_id").references(() => workspace.id, { onDelete: "cascade" } ),
+	workspaceId: uuid("workspace_id").references(() => workspaces.id, { onDelete: "cascade" } ),
 	folderId: uuid("folder_id").references(() => folders.id, { onDelete: "cascade" } ),
 });
 
@@ -129,4 +129,12 @@ export const subscriptions = pgTable('subscriptions', {
     withTimezone: true,
     mode: 'string',
   }).default(sql`now()`),
+});
+
+
+export const collaborators = pgTable("collaborators", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
+	workspaceId: uuid("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" } ),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
 });

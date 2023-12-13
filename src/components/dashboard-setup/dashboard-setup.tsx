@@ -14,7 +14,7 @@ import {
 import EmojiPicker from '../global/emoji-picker';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
-import { Subscription, Workspace } from '@/lib/supabase/supabase.types';
+import { Subscription, workspace } from '@/lib/supabase/supabase.types';
 import { Button } from '../ui/button';
 import Loader from '../global/Loader';
 import { createWorkspace } from '@/lib/supabase/queries';
@@ -79,7 +79,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
     }
     try {
-      const newWorkspace: Workspace = {
+      const newWorkspace: workspace = {
         data: null,
         createdAt: new Date().toISOString(),
         iconId: selectedEmoji,
