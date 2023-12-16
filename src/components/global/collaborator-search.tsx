@@ -14,6 +14,7 @@ import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
+import { getUsersFromSearch } from '@/lib/supabase/queries';
 
 interface CollaboratorSearchProps {
   existingCollaborators : User[] | [];
@@ -28,7 +29,7 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
 
 }) => {
   const { user } = useSupabaseUser();
-  const [searchResults, setSearchResults] = useState<Partial<User>[] | []>([{email:"something@gmail.com"},]);
+  const [searchResults, setSearchResults] = useState<User[] | []>([]);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
@@ -37,9 +38,17 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
     };
   },[]);
 
-  const onChangeHandler = () => {};
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout (async() => {
+      const res = await getUsersFromSearch(e.target.value);
+      setSearchResults(res);
+    }, 450)
+  };
 
-  const addCollaborator = () => {};
+  const addCollaborator = (user:User) => {
+    getCollaborator(user);
+  };
 
   return (
    <Sheet>
@@ -76,7 +85,11 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
                 {user.email}
               </div>
             </div>
-            <Button variant="secondary"></Button>
+            <Button 
+            variant="secondary" 
+            onClick={() => addCollaborator(user)}>
+              Add
+            </Button>
           </div>
         ))}
         </ScrollArea>
