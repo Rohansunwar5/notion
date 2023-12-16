@@ -11,6 +11,9 @@ import {
 } from '@/components/ui/sheet';
 import { Search } from 'lucide-react';
 import { Input } from '../ui/input';
+import { ScrollArea } from '../ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
 
 interface CollaboratorSearchProps {
   existingCollaborators : User[] | [];
@@ -25,7 +28,7 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
 
 }) => {
   const { user } = useSupabaseUser();
-  const [searchResults, setSearchResults] = useState<User [] | []>();
+  const [searchResults, setSearchResults] = useState<Partial<User>[] | []>([{email:"something@gmail.com"},]);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
@@ -52,8 +55,31 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
         </SheetHeader>
         <div className='flex justify-center items-center gap-2 mt-2'>
           <Search/>
-          <Input name='name' className='dark:bg-background'/>
+          <Input name='name' className='dark:bg-background' placeholder='Email' onChange={onChangeHandler}/>
         </div>
+        <ScrollArea
+          className='mt-6 overflow-y-auto w-full rounded-md'
+        >
+          {searchResults
+          .filter((result) => !existingCollaborators.some((existing) => existing.id === result.id
+          )
+        )
+        .filter((result) => result.id !== user?.id)
+        .map((user) => (
+          <div key={user.id} className='p-4 flex justify-between items-center'>
+            <div className='flex gap-4 items-center'>
+              <Avatar className='w-8 h-8'>
+                <AvatarImage src='/public/avatars/7.png'/>
+                <AvatarFallback>SH</AvatarFallback>
+              </Avatar>
+              <div className='text-sm gap-2 overflow-hidden overflow-ellipsis w-[180px] text-muted-foreground'>
+                {user.email}
+              </div>
+            </div>
+            <Button variant="secondary"></Button>
+          </div>
+        ))}
+        </ScrollArea>
       </SheetContent>
    </Sheet>
     
