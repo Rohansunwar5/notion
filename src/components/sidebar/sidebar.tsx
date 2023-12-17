@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 // import { workspace } from '@/lib/supabase/supabase.types';
 import WorkspaceDropdown from './workspace-dropdown';
+import PlanUsage from './plan-usage';
+import NativeNavigation from './native-navigation';
 
 interface SidebarProps {
   params: { workspaceId: string};
@@ -21,7 +23,7 @@ const Sidebar:React.FC<SidebarProps> = async ({params, className}) => {
 
   if(!user) return;
   //subscription Status
-  const { data: subscription, error: subscriptionError } = await getUserSubscriptionStatus(user.id);
+  const { data: subscriptionData, error: subscriptionError } = await getUserSubscriptionStatus(user.id);
   //folder
   const {data: workspaceFolderData, error: foldersError} = await getFolders(params.workspaceId)
   //error
@@ -48,6 +50,11 @@ const Sidebar:React.FC<SidebarProps> = async ({params, className}) => {
           ...sharedWorkspaces,
         ].find((workspace) => workspace.id === params.workspaceId)}
       />
+      <PlanUsage
+        foldersLength={workspaceFolderData?.length || 0}
+        subscription={subscriptionData}
+      />
+      <NativeNavigation myWorkspaceId= {params.workspaceId} />
     </div>
   </aside>
 }

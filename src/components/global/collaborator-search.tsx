@@ -95,7 +95,6 @@ const CollaboratorSearch:React.FC<CollaboratorSearchProps> = ({
         </ScrollArea>
       </SheetContent>
    </Sheet>
-    
   )
 }
 
