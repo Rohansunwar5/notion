@@ -1,14 +1,28 @@
-// import { timestamp } from 'drizzle-orm/mysql-core';
-import { boolean, integer, jsonb, pgTable, uuid ,timestamp , text} from 'drizzle-orm/pg-core';
-import { prices, subscriptionStatus, users } from '../../../migrations/schema';
-import {sql} from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
+import {
+  prices,
+  products,
+  subscriptionStatus,
+  users,
+} from '../../../migrations/schema';
 
 export const workspaces = pgTable('workspaces', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', {
     withTimezone: true,
     mode: 'string',
-  }),
+  })
+    .defaultNow()
+    .notNull(),
   workspaceOwner: uuid('workspace_owner').notNull(),
   title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
@@ -23,40 +37,44 @@ export const folders = pgTable('folders', {
   createdAt: timestamp('created_at', {
     withTimezone: true,
     mode: 'string',
-  }),
- 
+  })
+    .defaultNow()
+    .notNull(),
   title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
   data: text('data'),
   inTrash: text('in_trash'),
-  
   bannerUrl: text('banner_url'),
-
-  workspaceId: uuid('workspace_id').references(() => workspaces.id, {
-    onDelete: "cascade",
-  })
+  workspaceId: uuid('workspace_id')
+    .notNull()
+    .references(() => workspaces.id, {
+      onDelete: 'cascade',
+    }),
 });
 
-export const files = pgTable('files' , {
+export const files = pgTable('files', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   createdAt: timestamp('created_at', {
     withTimezone: true,
     mode: 'string',
-  }),
- 
+  })
+    .defaultNow()
+    .notNull(),
   title: text('title').notNull(),
   iconId: text('icon_id').notNull(),
   data: text('data'),
   inTrash: text('in_trash'),
-  
   bannerUrl: text('banner_url'),
-
-  workspaceId: uuid('workspace_id').references(() => workspaces.id, {
-    onDelete: "cascade",
-  }),
-  folderId: uuid('folder_id').references(() => folders.id , {
-    onDelete: 'cascade',
-  }) 
+  workspaceId: uuid('workspace_id')
+    .notNull()
+    .references(() => workspaces.id, {
+      onDelete: 'cascade',
+    }),
+  folderId: uuid('folder_id')
+    .notNull()
+    .references(() => folders.id, {
+      onDelete: 'cascade',
+    }),
 });
 
 export const subscriptions = pgTable('subscriptions', {
@@ -119,5 +137,3 @@ export const collaborators = pgTable('collaborators', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 });
-
-
