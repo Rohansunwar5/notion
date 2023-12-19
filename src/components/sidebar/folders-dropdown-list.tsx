@@ -9,6 +9,8 @@ import { v4 } from 'uuid';
 // import { createFolder } from '@/lib/supabase/queries';
 import { useToast } from '../ui/use-toast';
 import TooltipComponent from '../global/tootltip-component';
+import { createFolder } from '@/lib/supabase/queries';
+import { Accordion } from '../ui/accordion';
 // import { Accordion } from '../ui/accordion';
 // import Dropdown from './Dropdown';
 // import useSupabaseRealtime from '@/lib/hooks/useSupabaseRealtime';
@@ -59,10 +61,10 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
 
   //add folder
   const addFolderHandler = async () => {
-    if (folders.length >= 3 && !subscription) {
-      // setOpen(true);
-      return;
-    }
+    // if (folders.length >= 3 && !subscription) {
+    //   // setOpen(true);
+    //   return;
+    // }
     const newFolder: Folder = {
       data: null,
       id: v4(),
@@ -77,22 +79,23 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
       type: 'ADD_FOLDER',
       payload: { workspaceId, folder: { ...newFolder, files: [] } },
     });
-    // const { data, error } = await createFolder(newFolder);
-    // if (error) {
-    //   toast({
-    //     title: 'Error',
-    //     variant: 'destructive',
-    //     description: 'Could not create the folder',
-    //   });
-    // } else {
-    //   toast({
-    //     title: 'Success',
-    //     description: 'Created folder.',
-    //   });
-    // }
+    const {data, error} = await createFolder(newFolder);
+    if(error){
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: 'Could not create the folder',
+      })
+    } else {
+      toast({
+        title: 'Success',
+        description: 'Folder created ',
+      })
+    }
   };
 
   return (
+    <>
     <div
         className="flex
         sticky 
@@ -127,44 +130,13 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
           />
         </TooltipComponent>
     </div>
+        <Accordion type='multiple' defaultValue={[folderId || '']} className='pb-20'>
+        {folders.filter((folder) => !folder.inTrash).map((folder) => (
+          <div key={folder.id}></div>
+        ))}
+        </Accordion>
+    </>
   )   
-  //         className="text-Neutrals-8 
-  //       font-bold 
-  //       text-xs"
-  //       >
-  //         FOLDERS
-  //       </span>
-  //       {/* <TooltipComponent message="Create Folder"> */}
-  //         <PlusIcon
-  //           onClick={addFolderHandler}
-  //           size={16}
-  //           className="group-hover/title:inline-block
-  //           hidden 
-  //           cursor-pointer
-  //           hover:dark:text-white
-  //         "
-  //         />
-  //       {/* </TooltipComponent> */}
-  //     </div>
-  //     {/* <Accordion */}
-  //       type="multiple"
-  //       defaultValue={[folderId || '']}
-  //       className="pb-20"
-  //     {/* > */}
-  //       {folders
-  //         .filter((folder) => !folder.inTrash)
-  //         .map((folder) => (
-  //         //   // <Dropdown
-  //         //     key={folder.id}
-  //         //     title={folder.title}
-  //         //     listType="folder"
-  //         //     id={folder.id}
-  //         //     iconId={folder.iconId}
-  //         //   />
-  //         // ))}
-  //   //   </Accordion>
-  //   // </>
-  // );
 };
 
 export default FoldersDropdownList;
