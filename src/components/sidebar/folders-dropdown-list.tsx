@@ -11,6 +11,7 @@ import { useToast } from '../ui/use-toast';
 import TooltipComponent from '../global/tootltip-component';
 import { createFolder } from '@/lib/supabase/queries';
 import { Accordion } from '../ui/accordion';
+import Dropdown from './Dropdown';
 // import { Accordion } from '../ui/accordion';
 // import Dropdown from './Dropdown';
 // import useSupabaseRealtime from '@/lib/hooks/useSupabaseRealtime';
@@ -132,7 +133,13 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
     </div>
         <Accordion type='multiple' defaultValue={[folderId || '']} className='pb-20'>
         {folders.filter((folder) => !folder.inTrash).map((folder) => (
-          <div key={folder.id}></div>
+          <Dropdown 
+          key={folder.id}
+          title={folder.title}
+          listType='folder'
+          id={folder.id}
+          iconId={folder.iconId}
+          />
         ))}
         </Accordion>
     </>

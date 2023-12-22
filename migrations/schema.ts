@@ -130,6 +130,8 @@ export const subscriptions = pgTable('subscriptions', {
     mode: 'string',
   }).default(sql`now()`),
 });
+
+
 export const collaborators = pgTable("collaborators", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	workspaceId: uuid("workspace_id").notNull().references(() => workspaces.id, { onDelete: "cascade" } ),

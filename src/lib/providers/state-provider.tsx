@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { File, Folder, workspace } from '../supabase/supabase.types';
 import { usePathname } from 'next/navigation';
-// import { getFiles } from '../supabase/queries';
+import { getFiles } from '../supabase/queries';
 
 export type appFoldersType = Folder & { files: File[] | [] };
 export type appWorkspacesType = workspace & {

@@ -356,7 +356,7 @@ export interface Database {
           }
         ];
       };
-      workspace: {
+      workspaces: {
         Row: {
           banner_url: string | null;
           created_at: string;
@@ -416,6 +416,7 @@ export interface Database {
     };
   };
 }
+
 
 export type workspace = InferSelectModel<typeof workspaces>;
 export type User = InferSelectModel<typeof users>;
