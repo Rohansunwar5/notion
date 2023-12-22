@@ -197,6 +197,18 @@ const Dropdown:React.FC<DropdownProps> = ({
       });
     }
   };
+  const hoverStyles = useMemo(
+    () =>
+      clsx(
+        'h-full hidden rounded-sm absolute right-0 items-center justify-center',
+        {
+          'group-hover/file:block': listType === 'file',
+          'group-hover/folder:block': listType === 'folder',
+        }
+      ),
+    [isFolder]
+  );
+
   
   return (
     <AccordionItem 
