@@ -216,7 +216,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           fileId: pathId[1],
         },
       });
-      const { data, error } = await updateFile(
+    const { data, error } = await updateFile(
         { inTrash: `Deleted by ${user?.email}` },
         pathId[1]
       );

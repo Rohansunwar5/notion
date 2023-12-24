@@ -58,7 +58,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
     );
     if (findSelectedWorkspace) setSelectedOption(findSelectedWorkspace);
   }, [state, defaultValue]);
-
+  //another better way of doing it is to just set the local state once we have the workspace set. THis way every workspace will be in sync 
   return (
     <div
       className=" relative inline-block
