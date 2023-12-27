@@ -20,7 +20,6 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
   dirType,
   children,
   className,
-  details,
 }) => {
   return (
     <CustomDialogTrigger

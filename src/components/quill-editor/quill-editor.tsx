@@ -1,10 +1,10 @@
 'use client'
 import { useAppState } from '@/lib/providers/state-provider';
 import { File, Folder, workspace } from '@/lib/supabase/supabase.types'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import 'quill/dist/quill.snow.css';
 import { Button } from '../ui/button';
-import { deleteFile, deleteFolder, updateFile, updateFolder, updateWorkspace } from '@/lib/supabase/queries';
+import { deleteFile, deleteFolder, getFileDetails, getFolderDetails, getWorkspaceDetails, updateFile, updateFolder, updateWorkspace } from '@/lib/supabase/queries';
 import { usePathname, useRouter } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -14,6 +14,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import EmojiPicker from '../global/emoji-picker';
 import BannerUpload from '../banner-upload/banner-upload';
 import { XCircleIcon } from 'lucide-react';
+import { useSocket } from '@/lib/providers/socket-provider';
 
 interface QuillEditorProps {
   dirDetails: File | Folder | workspace;
@@ -48,6 +49,7 @@ const QuillEditor:React.FC<QuillEditorProps> = ({
 }) => {
   const supabase = createClientComponentClient();
   const {state, workspaceId, folderId, dispatch} = useAppState();
+  const {socket} = useSocket();
   const [quill, setQuill] = useState<any>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -253,6 +255,76 @@ const QuillEditor:React.FC<QuillEditorProps> = ({
       setQuill(q);
     } 
   }, [])
+
+  useEffect(() => {
+    if (!fileId) return;
+    let selectedDir;
+    const fetchInformation = async () => {
+      if (dirType === 'file') {
+        const { data: selectedDir, error } = await getFileDetails(fileId);
+        if (error || !selectedDir) {
+          return router.replace('/dashboard');
+        }
+
+        if (!selectedDir[0]) {
+          if (!workspaceId) return;
+          return router.replace(`/dashboard/${workspaceId}`);
+        }
+        if (!workspaceId || quill === null) return;
+        if (!selectedDir[0].data) return;
+        quill.setContents(JSON.parse(selectedDir[0].data || ''));
+        dispatch({
+          type: 'UPDATE_FILE',
+          payload: {
+            file: { data: selectedDir[0].data },
+            fileId,
+            folderId: selectedDir[0].folderId,
+            workspaceId,
+          },
+        });
+      }
+      if (dirType === 'folder') {
+        const { data: selectedDir, error } = await getFolderDetails(fileId);
+        if (error || !selectedDir) {
+          return router.replace('/dashboard');
+        }
+
+        if (!selectedDir[0]) {
+          router.replace(`/dashboard/${workspaceId}`);
+        }
+        if (quill === null) return;
+        if (!selectedDir[0].data) return;
+        quill.setContents(JSON.parse(selectedDir[0].data || ''));
+        dispatch({
+          type: 'UPDATE_FOLDER',
+          payload: {
+            folderId: fileId,
+            folder: { data: selectedDir[0].data },
+            workspaceId: selectedDir[0].workspaceId,
+            //There is a change of workspace|null in the state provider because fo the error in this case
+          },
+        });
+      }
+      if (dirType === 'workspace') {
+        const { data: selectedDir, error } = await getWorkspaceDetails(fileId);
+        if (error || !selectedDir) {
+          return router.replace('/dashboard');
+        }
+        if (!selectedDir[0] || quill === null) return;
+        if (!selectedDir[0].data) return;
+        quill.setContents(JSON.parse(selectedDir[0].data || ''));
+        dispatch({
+          type: 'UPDATE_WORKSPACE',
+          payload: {
+            workspace: { data: selectedDir[0].data },
+            workspaceId: fileId,
+          },
+        });
+      }
+    };
+    fetchInformation();
+  }, [fileId, workspaceId, quill, dirType]);
+
   return ( 
     <>
     <div className='relative'>
@@ -373,7 +445,7 @@ const QuillEditor:React.FC<QuillEditorProps> = ({
               </Button>
             )}
           </div>
-          <span className='text-muted-foreground text-3xl font-bold h-9'>{details.title}</span>
+          <span className='text-muted-foresground text-3xl font-bold h-9'>{details.title}</span>
           <span className='text-muted-foreground text-sm'>{dirType.toUpperCase()}</span>
         </div>
         <div

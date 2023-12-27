@@ -60,7 +60,7 @@ type Action =
       type: 'UPDATE_FOLDER';
       payload: {
         folder: Partial<appFoldersType>;
-        workspaceId: string;
+        workspaceId: string | null;
         folderId: string;
       };
     }
@@ -128,11 +128,10 @@ const appReducer = (
           return workspace;
         }),
       };
-      case 'ADD_FOLDER':
+    case 'ADD_FOLDER':
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
-          
           return {
             ...workspace,
             folders: [...workspace.folders, action.payload.folder].sort(
@@ -140,9 +139,8 @@ const appReducer = (
                 new Date(a.createdAt).getTime() -
                 new Date(b.createdAt).getTime()
             ),
-          }
+          };
         }),
-      
       };
     case 'UPDATE_FOLDER':
       return {
