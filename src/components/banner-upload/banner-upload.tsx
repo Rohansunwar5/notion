@@ -26,11 +26,10 @@ const BannerUpload: React.FC<BannerUploadProps> = ({
     <CustomDialogTrigger
       header="Upload Banner"
       content={
-        <BannerUploadForm>
-          details={details}
-          dirType={dirType}
+        <BannerUploadForm
+         dirType={dirType}
           id={id}
-        </BannerUploadForm>
+        />
       }
       className={className}
     >

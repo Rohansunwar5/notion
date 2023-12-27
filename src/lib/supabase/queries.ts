@@ -64,6 +64,7 @@ export const getPrivateWorkspaces = async (userId: string) => {
     data: workspaces.data,
     inTrash: workspaces.inTrash,
     logo: workspaces.logo,
+    bannerUrl: workspaces.bannerUrl,
   })
   .from(workspaces)
   .where(and(notExists(db
